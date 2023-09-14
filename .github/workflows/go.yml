@@ -26,6 +26,7 @@ jobs:
       - name: Unit test
         run: |
           export GOCOVERDIR=$PWD/cover
+          mkdir $GOCOVERDIR
           go test -v ./...
 
       - name: Coverage report
