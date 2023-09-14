@@ -15,28 +15,48 @@ go get github.com/cpunion/godog-steps
 Then, you can create youre `feature_test.go` file following the example at https://github.com/cucumber/godog#testmain and import the steps:
 
 ```go
+package main
+
 import (
-  // ... other code
+	"os"
+	"testing"
+
 	steps "github.com/cpunion/godog-steps"
 	"github.com/cpunion/godog-steps/file"
 	"github.com/cucumber/godog"
-	// ... other code
+	"github.com/cucumber/godog/colors"
+	"github.com/cpunion/godog-steps/features"
+	"github.com/spf13/pflag"
 )
 
-// ... other code
+var opts = godog.Options{
+	Output: colors.Colored(os.Stdout),
+	Format: "pretty",
+}
+
+func init() {
+	godog.BindCommandLineFlags("godog.", &opts) // godog v0.11.0 and later
+}
 
 func TestMain(m *testing.M) {
-  // ... other code
-	file.InitAssetsFS(features.AssetsFS) // Unnessesary if you don't use files mock
+	pflag.Parse()
+	opts.Paths = pflag.Args()
+
+	file.InitAssetsFS(features.AssetsFS)
 
 	status := godog.TestSuite{
 		Name: "godogs",
 		ScenarioInitializer: func(s *godog.ScenarioContext) {
-			steps.Init(s) // Initialize steps in this REPO
-      // ... Your steps
+			steps.Init(s)
 		},
 		Options: &opts,
 	}.Run()
-  // ... other code
+
+	// Optional: Run `testing` package's logic besides godog.
+	if st := m.Run(); st > status {
+		status = st
+	}
+
+	os.Exit(status)
 }
 ```
