@@ -7,6 +7,7 @@ require (
 	github.com/cucumber/godog v0.13.0
 	github.com/kettek/apng v0.0.0-20220823221153-ff692776a607
 	github.com/nsf/jsondiff v0.0.0-20230430225905-43f6cf3098c1
+	github.com/spf13/pflag v1.0.5
 )
 
 require (
@@ -23,7 +24,6 @@ require (
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
 	golang.org/x/sys v0.12.0 // indirect
 )

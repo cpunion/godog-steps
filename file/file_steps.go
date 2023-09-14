@@ -2,6 +2,7 @@ package file
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"io/fs"
@@ -75,6 +76,17 @@ func unindent(s string) (string, error) {
 	return strings.Join(lines, "\n"), nil
 }
 
+func iShouldHaveAFileAt(ctx context.Context, path string) (context.Context, error) {
+	st, err := os.Stat(filepath.Join(cmd.GetCwd(ctx), path))
+	if err != nil {
+		return ctx, err
+	}
+	if st.IsDir() {
+		return ctx, errors.New("file is a directory")
+	}
+	return ctx, nil
+}
+
 func iShouldHaveAFileWithContent(ctx context.Context, file string, content string) (context.Context, error) {
 	content, err := unindent(content)
 	if err != nil {
@@ -136,5 +148,6 @@ func Init(ctx *godog.ScenarioContext) {
 	ctx.Step(`^I have a symbol link "([^"]*)" to "([^"]*)"$`, iHaveASymbolLinkTo)
 	ctx.Step(`^I have a url "([^"]*)" from file "([^"]*)"$`, iHaveAUrlFromFile)
 	ctx.Step(`^I should have a file "([^"]*)" with content:$`, iShouldHaveAFileWithContent)
+	ctx.Step(`^I should have a file "([^"]*)"$`, iShouldHaveAFileAt)
 	ctx.Step(`^I should have a JSON file "([^"]*)" likes:$`, iShouldHaveAJSONFileLikes)
 }

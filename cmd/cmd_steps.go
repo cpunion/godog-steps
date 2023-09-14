@@ -1,14 +1,12 @@
 package cmd
 
 import (
-	"bufio"
 	"bytes"
 	"context"
 	"errors"
 	"fmt"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -22,6 +20,7 @@ type cmdState struct {
 	cmd    *exec.Cmd
 	cwd    string
 	bg     bool
+	done   bool
 	print  bool
 	stdOut bytes.Buffer
 	// stdErr bytes.Buffer
@@ -55,13 +54,6 @@ func GetErr(ctx context.Context) error {
 
 func GetOut(ctx context.Context) string {
 	cmdState := getCmdState(ctx)
-	if !cmdState.bg {
-		out, err := cmdState.cmd.CombinedOutput()
-		if err != nil {
-			return ""
-		}
-		return string(out)
-	}
 	return cmdState.stdOut.String()
 }
 
@@ -79,11 +71,11 @@ func iRun(ctx context.Context, command string) (context.Context, error) {
 	cmdState := getCmdState(ctx)
 	cmd := exec.Command(args[0], args[1:]...)
 	cmd.Dir = GetCwd(ctx)
-	cmd.Stdout = bufio.NewWriter(&cmdState.stdOut)
-	cmd.Stderr = bufio.NewWriter(&cmdState.stdOut)
 	cmdState.cmd = cmd
 	cmdState.bg = false
-	cmdState.err = cmd.Run()
+	out, err := cmdState.cmd.CombinedOutput()
+	cmdState.err = err
+	cmdState.stdOut.Write(out)
 	return ctx, nil
 }
 
@@ -107,22 +99,9 @@ func iRunInBackground(ctx context.Context, command string) (context.Context, err
 func itShouldRunSuccessfuly(ctx context.Context) (context.Context, error) {
 	err := GetErr(ctx)
 	if err != nil {
-		out := GetOut(ctx)
-		fmt.Printf("err: %+v\n", err)
-		fmt.Printf("out: %+v\n", out)
-	}
-	return ctx, err
-}
-
-func iShouldHaveAFileAt(ctx context.Context, path string) (context.Context, error) {
-	st, err := os.Stat(filepath.Join(GetCwd(ctx), path))
-	if err != nil {
 		return ctx, err
 	}
-	if st.IsDir() {
-		return ctx, errors.New("file is a directory")
-	}
-	return ctx, nil
+	return ctx, err
 }
 
 func iShouldSeeOutput(ctx context.Context, content string) (context.Context, error) {
@@ -142,7 +121,7 @@ func iShouldSeeOutput(ctx context.Context, content string) (context.Context, err
 func Init(ctx *godog.ScenarioContext) {
 	ctx.Before(func(ctx context.Context, sc *godog.Scenario) (context.Context, error) {
 		// create a random temporary directory and change to it
-		dir, err := os.MkdirTemp("", "gltf")
+		dir, err := os.MkdirTemp("", "test")
 		if err != nil {
 			return ctx, err
 		}
@@ -192,6 +171,5 @@ func Init(ctx *godog.ScenarioContext) {
 	ctx.Step(`^I run "([^"]*)" in background$`, iRunInBackground)
 	ctx.Step(`^It should run successfully$`, itShouldRunSuccessfuly)
 	ctx.Step(`^I should see output "([^"]*)"$`, iShouldSeeOutput)
-	ctx.Step(`^I should have a file "([^"]*)"$`, iShouldHaveAFileAt)
 	ctx.Step(`^Show console output after exit$`, showConsoleOutputAfterExit)
 }
