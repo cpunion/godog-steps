@@ -14,15 +14,15 @@ go get github.com/cpunion/godog-steps
 
 Then, you can create youre `feature_test.go` file following the example at https://github.com/cucumber/godog#testmain and import the steps:
 
-```go
+```diff
 package main
 
 import (
 	"os"
 	"testing"
 
-	steps "github.com/cpunion/godog-steps"
-	"github.com/cpunion/godog-steps/file"
++	steps "github.com/cpunion/godog-steps"
++	"github.com/cpunion/godog-steps/file"
 	"github.com/cucumber/godog"
 	"github.com/cucumber/godog/colors"
 	"github.com/cpunion/godog-steps/features"
@@ -42,12 +42,13 @@ func TestMain(m *testing.M) {
 	pflag.Parse()
 	opts.Paths = pflag.Args()
 
-	file.InitAssetsFS(features.AssetsFS)
++	// Add test fixtures if need
++	file.InitAssetsFS(features.AssetsFS)
 
 	status := godog.TestSuite{
 		Name: "godogs",
 		ScenarioInitializer: func(s *godog.ScenarioContext) {
-			steps.Init(s)
++			steps.Init(s)
 		},
 		Options: &opts,
 	}.Run()
