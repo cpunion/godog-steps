@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/chromedp/chromedp v0.9.3
-	github.com/cucumber/godog v0.13.0
+	github.com/cucumber/godog v0.14.0
 	github.com/kettek/apng v0.0.0-20220823221153-ff692776a607
 	github.com/nsf/jsondiff v0.0.0-20230430225905-43f6cf3098c1
 	github.com/spf13/pflag v1.0.5
