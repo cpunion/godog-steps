@@ -3,7 +3,7 @@ module github.com/cpunion/godog-steps
 go 1.20
 
 require (
-	github.com/chromedp/chromedp v0.9.3
+	github.com/chromedp/chromedp v0.9.4
 	github.com/cucumber/godog v0.13.0
 	github.com/kettek/apng v0.0.0-20220823221153-ff692776a607
 	github.com/nsf/jsondiff v0.0.0-20230430225905-43f6cf3098c1
@@ -11,13 +11,13 @@ require (
 )
 
 require (
-	github.com/chromedp/cdproto v0.0.0-20231011050154-1d073bb38998 // indirect
+	github.com/chromedp/cdproto v0.0.0-20240127002248-bd7a66284627 // indirect
 	github.com/chromedp/sysutil v1.0.0 // indirect
 	github.com/cucumber/gherkin/go/v26 v26.2.0 // indirect
 	github.com/cucumber/messages/go/v21 v21.0.1 // indirect
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
-	github.com/gobwas/ws v1.3.0 // indirect
+	github.com/gobwas/ws v1.3.2 // indirect
 	github.com/gofrs/uuid v4.3.1+incompatible // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect
 	github.com/hashicorp/go-memdb v1.3.4 // indirect
